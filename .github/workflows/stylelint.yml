@@ -1,0 +1,31 @@
+name: Stylelint
+
+on:
+  push:
+    paths:
+      - '**/*.css'
+  pull_request:
+    paths:
+      - '**/*.css'
+
+jobs:
+  stylelint:
+    name: Run stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (if present)
+        run: |
+          if [ -f package.json ]; then npm ci; fi
+
+      - name: Run stylelint
+        run: |
+          # Run stylelint; fall back to npx installing it if not in package.json
+          npx --yes stylelint "PSD/_build/html/_static/**/*.css" --config .stylelintrc.json
